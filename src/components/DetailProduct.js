@@ -23,38 +23,42 @@ const DetailProduct = () => {
       }
     }
 
-    const [formValue, setformValue] = React.useState({
+    const [formValue, setFormValue] = React.useState({
     email: '',
   });
 
-  const handleSubmit = (event) => {
-        // we will fill this in the coming paragraph
-            // store the states in the form data
+    const handleSubmit = async (event) => {
+      
+        event.preventDefault();
         const bodyFormData = new FormData();
-        FormData.append("email", formValue.email)
+        bodyFormData.append("email", formValue.email)
+        bodyFormData.append("price", product.price)
+        bodyFormData.append("product_id", product.id)
 
         try {
         // make axios post request
-        const response =  axios({
+        const response =  await axios({
             method: "post",
             url: apiUrl+"user/email",
-            data: bodyFormData,
-            headers: { "Content-Type": "multipart/form-data" },
+          data: {
+            "email": formValue.email,
+            "price": product.price,
+            "product_id": product.id              
+            },
+            headers: { "Content-Type": "application/json" },
         });
-            if (response?.data?.data?.status === true)
-        console.log(response?.data);
+           console.log(response?.data?.data)
         } catch(error) {
-        console.log(error)
+             console.log(error)
         }
   }
 
   const handleChange = (event) => {
-    setformValue({
+    setFormValue({
       ...formValue,
       [event.target.name]: event.target.value
     });
   }
-
   
    
     return (
@@ -105,7 +109,9 @@ const DetailProduct = () => {
         onChange={handleChange}
       />
                     </div>
-                    <input type="submit"/>
+                    <button
+                    type="submit"
+                    >Submit</button>
                     </form>
                 </Card.Footer>
         </Card>
